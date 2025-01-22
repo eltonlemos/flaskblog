@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <link href="static/css/signin.css" rel="stylesheet">
+   <script src="{{ url_for('static', filename='js/jquery-1.9.0.js') }}"></script>
+   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+  		<article class="media content-section">
+  			<img class="rounded-circle article-img" src="{{ url_for('static',filename='profile_pics/' + post.author.image_file) }}">
+  			<div class="media-body">
+  				<div class="article-metadata">
+  					<a class="mr-2" href="{{url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+
+            {% if post.genre == "Horror" %}
+            <span class="badge badge-dark">{{ post.genre }}</span>
+            {% elif post.genre == "Romance" %}
+            <span class="badge badge-danger">{{ post.genre }}</span>
+            {% elif post.genre == "Comedy" %}
+            <span class="badge badge-warning">{{ post.genre }}</span>
+            {% elif post.genre == "Suspense" %}
+            <span class="badge badge-secondary">{{ post.genre }}</span>
+            {% elif post.genre == "Drama" %}
+            <span class="badge badge-success">{{ post.genre }}</span>
+            {% elif post.genre == "Sci-fy" %}
+            <span class="badge badge-info">{{ post.genre }}</span>
+            {% else %}
+            <span class="badge badge-primary">general</span>
+            {% endif %}
+
+  					<small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+            {% if post.author == current_user %}
+            <div>
+              <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
+              <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#exampleModal">Delete</button>
+            </div>
+            {% endif %}
+   				</div>
+   				<h2 class="article-title">{{ post.title }}</h2>
+   				<p class="article-content">{{ post.content }}</p>
+  			</div>
+  		</article>
+      <font size="6">
+      <div class="alert alert-secondary">like count:
+      <a class="text-success badge badge-light">{{ post.like_count }}</a>
+      </div>
+
+    
+
+      <form action="{{ url_for('posts.like_post', post_id=post.id) }}">
+      {% if user_liked== 1 %}
+      <button class="btn btn-danger mb-10" type="submit">dislike</button>
+      {% else %}
+      <button class="btn btn-success mb-4 t-4" type="submit">like</button>
+      {% endif %}
+      </form>
+      </font>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete Post?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+                <input class="btn btn-danger" type="submit" value="Delete">
+            </div>
+          </div>
+        </div>
+      </div>
+{% endblock content %}
